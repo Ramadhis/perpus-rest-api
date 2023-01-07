@@ -15,7 +15,13 @@ return new class extends Migration
     {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_member');
+            $table->integer('id_buku');
+            $table->date('tgl_pinjam');
+            $table->date('tgl_pengembalian');
+            $table->tinyInteger('status_pengembalian');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

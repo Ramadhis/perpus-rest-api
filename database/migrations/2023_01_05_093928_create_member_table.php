@@ -15,6 +15,11 @@ return new class extends Migration
     {
         Schema::create('member', function (Blueprint $table) {
             $table->id();
+            $table->string('no_ktp');
+            $table->string('nama');
+            $table->string('alamat');
+            $table->date('tgl_lahir');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

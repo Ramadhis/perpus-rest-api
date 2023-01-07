@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BookController;
+use App\Http\Controllers\BukuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/book', [BookController::class, 'index']);
-    Route::get('/get-token', [BookController::class, 'get_token']);
+    Route::get('/book', [BukuController::class, 'index']);
+    Route::get('/list-peminjam/{id}', [BukuController::class, 'list_peminjam']);
+    Route::get('/get-token', [BukuController::class, 'get_token']);
 });
 
 // Route::get('/book', [BookController::class, 'index'])->middleware('auth:sanctum');

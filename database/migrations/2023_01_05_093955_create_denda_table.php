@@ -15,7 +15,13 @@ return new class extends Migration
     {
         Schema::create('denda', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_member');
+            $table->integer('id_buku');
+            $table->string('jumlah_denda');
+            $table->enum('jenis_denda',['terlambat','kerusakan','lainnya']);
+            $table->text('deskripsi');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
