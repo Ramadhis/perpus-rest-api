@@ -21,4 +21,41 @@ class BukuController extends Controller
     public function get_token(Request $req) {
         return $req->bearerToken();
     }
+
+    public function validation_buku($req){
+        $validator = Validator::make($req->all(),[
+            'no_rak' => 'required|string|max:100',
+            'judul' => 'required|string|max:100',
+            'pengarang' => 'required|string|max:100',
+            'tahun_terbit' => 'required|string|max:100',
+            'penerbit' => 'required|string|max:100',
+            'stok' => 'required|string|max:100',
+            'detail' => 'string',
+        ]);
+        
+        if($validator->fails()){
+            return response()->json($validator->errors());       
+        }else {
+            return $validator;
+        }
+    }
+
+    public function add(Request $req) {
+        //add
+        $validator = validation_buku($req);
+    }
+    public function update(Request $req) {
+        //update
+        $validator = validation_buku($req);
+    }
+    public function delete(Request $req) {
+        //delete
+    }
+    public function buku_dipinjam(Request $req) {
+        //buku_dipinjam
+    }
+    public function buku_rusak(Request $req) {
+        //buku_rusak
+    }
+
 }
