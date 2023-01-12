@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Buku;
 use App\Models\Peminjaman;
+use Illuminate\Support\Facades\Validator;
 
 class BukuController extends Controller
 {
@@ -34,7 +35,7 @@ class BukuController extends Controller
         ]);
         
         if($validator->fails()){
-            return response()->json($validator->errors());       
+            return false;
         }else {
             return $validator;
         }
@@ -43,10 +44,18 @@ class BukuController extends Controller
     public function add(Request $req) {
         //add
         $validator = validation_buku($req);
+
+        if(!$validator){
+            return response()->json($validator->errors());
+        }
     }
     public function update(Request $req) {
         //update
         $validator = validation_buku($req);
+
+        if(!$validator){
+            return response()->json($validator->errors());
+        }
     }
     public function delete(Request $req) {
         //delete

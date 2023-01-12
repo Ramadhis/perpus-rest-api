@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use App\Services\PayUService\Exception;
 
 class AuthController extends Controller
 {
@@ -50,11 +50,19 @@ class AuthController extends Controller
             return response()->json($validator->errors());       
         }
 
-        if (Auth::attempt(['email' => $req->email, 'password' => $req->password])) {
-            $user = Auth::user();
-            $response['token'] = $user->createToken('perpustakaan')->plainTextToken;
-            return response()->json($response,200);
+        try {
+            if (Auth::attempt(['email' => $req->email, 'password' => $req->password])) {
+                $user = Auth::user();
+                $response['token'] = $user->createToken('perpustakaan')->plainTextToken;
+                return response()->json($response,200);
+            }
+            $response['err'] = 'kosong';
+            return response()->json($req->password,200);
+        } catch (\Exception $err) {
+            $data['message'] = 'terjadi kesalahan';
+            $data['error'] = $err->getMessage();
+            return response()->json($data,404);
         }
-        return $user;
+
     }
 }
