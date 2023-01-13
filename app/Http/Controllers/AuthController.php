@@ -65,4 +65,8 @@ class AuthController extends Controller
         }
 
     }
+
+    public function get_token(Request $req) {
+        return $req->bearerToken();
+    }
 }

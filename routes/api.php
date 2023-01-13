@@ -22,10 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/book', [BukuController::class, 'index']);
-    Route::get('/list-peminjam/{id}', [BukuController::class, 'list_peminjam']);
-    Route::get('/get-token', [BukuController::class, 'get_token']);
+Route::group(['middleware' => 'auth:sanctum'], function(){
+    Route::get('/get-token', [AuthController::class, 'get_token']);
+});
+
+Route::group(['middleware' => 'auth:sanctum','prefix' => 'book'], function(){
+    Route::get('/', [BukuController::class, 'index']);
+    Route::get('/find-book/{id}', [BukuController::class, 'find_book']);
+    Route::post('/create', [BukuController::class, 'create']);
+    Route::put('/update', [BukuController::class, 'update']);
+    Route::delete('/delete/{id}', [BukuController::class, 'delete_by_id']);
 });
 
 // Route::get('/book', [BookController::class, 'index'])->middleware('auth:sanctum');

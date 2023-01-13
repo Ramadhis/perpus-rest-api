@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Buku;
 use App\Models\Peminjaman;
 use Illuminate\Support\Facades\Validator;
+use App\Services\PayUService\Exception;
 
 class BukuController extends Controller
 {
@@ -14,13 +15,15 @@ class BukuController extends Controller
         return response()->json($get_book,200);
     }
 
-    public function list_peminjam($id){
+    public function find_book($id){
         $get_book = Buku::find($id);
-        return response()->json($get_book->peminjaman,200);
+        return response()->json($get_book,200);
     }
 
-    public function get_token(Request $req) {
-        return $req->bearerToken();
+    public function find_buku_dipinjam($id_user){
+        /* $get_book = Buku::find($id); 
+        return response()->json($get_book->peminjaman,200);
+        */
     }
 
     public function validation_buku($req){
@@ -33,32 +36,79 @@ class BukuController extends Controller
             'stok' => 'required|string|max:100',
             'detail' => 'string',
         ]);
-        
-        if($validator->fails()){
-            return false;
-        }else {
-            return $validator;
-        }
+
+        return $validator;
     }
 
-    public function add(Request $req) {
-        //add
-        $validator = validation_buku($req);
+    public function arr_data($req){
+        return $data = [
+            'no_rak' => $req->no_rak,
+            'judul' => $req->judul,
+            'pengarang' => $req->pengarang,
+            'tahun_terbit' => $req->tahun_terbit,
+            'penerbit' => $req->penerbit,
+            'stok' => $req->stok,
+            'detail' => $req->detail,
+        ];
+    }
 
-        if(!$validator){
+    public function create(Request $req) {
+        //add
+        $validator = $this->validation_buku($req);
+
+        if($validator->fails()){
             return response()->json($validator->errors());
         }
+
+        try {
+            $data = $this->arr_data($req);
+            $insert = Buku::create($data);
+            return response()->json($insert,200);
+        } catch (\Exception $err) {
+            $data['message'] = 'terjadi kesalahan';
+            $data['error'] = $err->getMessage();
+            return response()->json($data,404);
+        }
     }
+
     public function update(Request $req) {
         //update
-        $validator = validation_buku($req);
+        $validator = $this->validation_buku($req);
 
         if(!$validator){
             return response()->json($validator->errors());
         }
+
+        try {
+            $buku = Buku::find($req->id);
+            $data = $this->arr_data($req);
+            $update = $buku->update($data);
+            return response()->json($update,200);
+        } catch (\Exception $err) {
+            $data['message'] = 'terjadi kesalahan';
+            $data['error'] = $err->getMessage();
+            return response()->json($data,404);
+        }
     }
-    public function delete(Request $req) {
+    
+    public function delete_by_id($id) {
         //delete
+        $data['id'] = $id; 
+        $validator = Validator::make($data,[
+            'id' => 'required|integer',
+        ]);
+        
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+        try {
+            $delete = Buku::find($id)->delete();
+            return response()->json($delete,200);
+        } catch (\Exception $err) {
+            $data['message'] = 'terjadi kesalahan';
+            $data['error'] = $err->getMessage();
+            return response()->json($data,404);
+        }
     }
     public function buku_dipinjam(Request $req) {
         //buku_dipinjam
