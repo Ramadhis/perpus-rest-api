@@ -1,0 +1,68 @@
+get http://127.0.0.1:8000/api/buku/find-book/2
+Content-Type: application/json
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+
+###
+put http://127.0.0.1:8000/api/buku/update/2
+Content-Type: application/json
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+
+{
+    "no_rak": "01B2ESSS2",
+    "judul": "sipenjelajah2",
+    "pengarang": "saya2",
+    "tahun_terbit": "2019",
+    "penerbit": "alex",
+    "stok": 99,
+    "detail": "123",
+    "_method":"put"
+}
+###
+post http://127.0.0.1:8000/api/buku/create
+Content-Type: application/json
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+
+{
+    "no_rak": "111",
+    "judul": "sipenjelajah2",
+    "pengarang": "saya2",
+    "tahun_terbit": "2019",
+    "penerbit": "alex",
+    "stok": "99",
+    "detail": "123",
+    "_method":"post"
+}
+
+###
+post http://127.0.0.1:8000/api/member/create
+Content-Type: application/json
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+
+{
+    "no_ktp": "4123",
+    "nama": "aaa",
+    "alamat": "jl jl",
+    "tgl_lahir":"2000/12/21"
+}
+
+###
+
+put http://127.0.0.1:8000/api/member/update/24
+Content-Type: application/json
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+
+{
+    "no_ktp": "33",
+    "nama": "aaa",
+    "alamat": "jl jl",
+    "tgl_lahir":"2000/12/21",
+    "_method": "put"
+}
+
+###
+delete http://127.0.0.1:8000/api/member/delete/24
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+###
+delete http://127.0.0.1:8000/api/buku/delete/3
+Authorization: Bearer 3|ewukNq4nFZpZU7trZfWmsKySCEO8psOeVbDvGl2w
+###

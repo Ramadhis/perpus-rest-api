@@ -7,7 +7,7 @@ use App\Models\Buku;
 use App\Models\Peminjaman;
 use Illuminate\Support\Facades\Validator;
 use App\Services\PayUService\Exception;
-
+use Throwable;
 class BukuController extends Controller
 {
     public function index(){
@@ -63,30 +63,33 @@ class BukuController extends Controller
         try {
             $data = $this->arr_data($req);
             $insert = Buku::create($data);
-            return response()->json($insert,200);
-        } catch (\Exception $err) {
-            $data['message'] = 'terjadi kesalahan';
-            $data['error'] = $err->getMessage();
+            $dat['status'] = 'success';
+            $dat['data'] = $insert;
+            return response()->json($dat,200);
+        } catch (Throwable $err) {
+            //function response_error from helper
+            $resp = response_error($err->getMessage(),'failed');
             return response()->json($data,404);
         }
     }
 
-    public function update(Request $req) {
+    public function update(Request $req,$id) {
         //update
+        
         $validator = $this->validation_buku($req);
 
         if(!$validator){
             return response()->json($validator->errors());
         }
-
         try {
-            $buku = Buku::find($req->id);
+            $buku = Buku::find($id);
             $data = $this->arr_data($req);
             $update = $buku->update($data);
-            return response()->json($update,200);
-        } catch (\Exception $err) {
-            $data['message'] = 'terjadi kesalahan';
-            $data['error'] = $err->getMessage();
+            $after_update = Buku::find($id);
+            return response()->json($after_update,200);
+        } catch (Throwable $err) {
+            //function response_error from helper
+            $resp = response_error($err->getMessage(),'failed');
             return response()->json($data,404);
         }
     }
@@ -102,14 +105,21 @@ class BukuController extends Controller
             return response()->json($validator->errors());
         }
         try {
-            $delete = Buku::find($id)->delete();
-            return response()->json($delete,200);
-        } catch (\Exception $err) {
-            $data['message'] = 'terjadi kesalahan';
-            $data['error'] = $err->getMessage();
+            $find = Buku::find($id);
+            if(!$find){
+                $resp = response_error('id not found','failed');
+                return response()->json($resp,404);
+            }
+            $delete = $find->delete();
+            $resp = response_data($delete,'success');
+            return response()->json($resp,200);
+        }catch (Throwable $err) {
+            //function response_error from helper
+            $resp = response_error($err->getMessage(),'failed');
             return response()->json($data,404);
         }
     }
+    
     public function buku_dipinjam(Request $req) {
         //buku_dipinjam
     }

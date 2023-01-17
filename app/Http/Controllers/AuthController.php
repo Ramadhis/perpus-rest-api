@@ -66,7 +66,16 @@ class AuthController extends Controller
 
     }
 
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+
+        $data['message'] = 'success logout';
+        return response()->json($data,200);
+    }
+
     public function get_token(Request $req) {
         return $req->bearerToken();
     }
+
 }
