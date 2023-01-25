@@ -9,27 +9,31 @@ use Throwable;
 
 class MemberController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $get_book = Member::all();
-        return response()->json($get_book,200);
+        return response()->json($get_book, 200);
     }
 
-    public function find_member($id){
+    public function find_member($id)
+    {
         $get_book = Member::find($id);
-        return response()->json($get_book,200);
+        return response()->json($get_book, 200);
     }
 
-    public function arr_data($req){
+    public function arr_data($req)
+    {
         return [
             'no_ktp' => $req->no_ktp,
-            'nama' => $req->nama, 
+            'nama' => $req->nama,
             'alamat' => $req->alamat,
             'tgl_lahir' => $req->tgl_lahir,
         ];
     }
 
-    public function validation($req){
-        $validator = Validator::make($req->all(),[
+    public function validation($req)
+    {
+        $validator = Validator::make($req->all(), [
             'no_ktp' => 'required|string|max:100',
             'nama' => 'required|string|max:100',
             'alamat' => 'required|string|max:100',
@@ -39,10 +43,11 @@ class MemberController extends Controller
         return $validator;
     }
 
-    public function create(Request $req){
+    public function create(Request $req)
+    {
         $validator = $this->validation($req);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors());
         }
 
@@ -50,63 +55,67 @@ class MemberController extends Controller
             $data = $this->arr_data($req);
             $insert = Member::create($data);
 
-						//reponse_data from helpers
-						$resp = response_data($insert,'success');
-						return response()->json($resp);
+            //reponse_data from helpers
+            $resp = response_data($insert, 'success');
+            return response()->json($resp);
         } catch (Throwable $err) {
-						$resp = response_error($err->getMessage(),'failed');
-            return response()->json($resp,404);
+            $resp = response_error($err->getMessage(), 'failed');
+            return response()->json($resp, 404);
         }
     }
 
-    public function update(Request $req,$id){
+    public function update(Request $req, $id)
+    {
         $validator = $this->validation($req);
 
-        if(!$validator){
+        if (!$validator) {
             return response()->json($validator->errors());
         }
 
         try {
             $find = Member::find($id);
+            if (!$find) {
+                $resp = response_error('id not found', 'success');
+                return response()->json($resp, 200);
+            }
             $data = $this->arr_data($req);
             $update = $find->update($data);
-						// function response_data from helper
-						$resp = response_data($update,'success');
-						return response()->json($resp,200);
+            // function response_data from helper
+            $resp = response_data($update, 'success');
+            return response()->json($resp, 200);
         } catch (Throwable $err) {
-						//function response_error from helper
-						$resp = response_error($err->getMessage(),'failed');
-            return response()->json($data,404);
+            //function response_error from helper
+            $resp = response_error($err->getMessage(), 'failed');
+            return response()->json($data, 404);
         }
     }
 
-    public function delete_by_id($id) {
+    public function delete_by_id($id)
+    {
         //delete
-        $data['id'] = $id; 
-        $validator = Validator::make($data,[
+        $data['id'] = $id;
+        $validator = Validator::make($data, [
             'id' => 'required|integer',
         ]);
-        
-        if($validator->fails()){
+
+        if ($validator->fails()) {
             return response()->json($validator->errors());
         }
 
         try {
             $find = Member::find($id);
-				
-			if(!$find){
-				$resp = response_error('id not found','failed');
-				return response()->json($resp,404);
-			}
-			$delete = $find->delete();
-			$resp = response_data($delete,'success');
-            return response()->json($resp,200);
+
+            if (!$find) {
+                $resp = response_error('id not found', 'success');
+                return response()->json($resp, 200);
+            }
+            $delete = $find->delete();
+            $resp = response_data($delete, 'success');
+            return response()->json($resp, 200);
         } catch (Throwable $err) {
             //function response_error from helper
-						$resp = response_error($err->getMessage(),'failed');
-            return response()->json($resp,404);
+            $resp = response_error($err->getMessage(), 'failed');
+            return response()->json($resp, 404);
         }
     }
-
-
 }
