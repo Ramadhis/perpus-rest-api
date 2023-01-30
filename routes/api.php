@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\DendaController;
 
 
 /*
@@ -54,5 +55,12 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'peminjaman'], functio
     Route::delete('/delete/{id}', [PeminjamanController::class, 'delete_by_id']);
 });
 
+Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'denda'], function () {
+    Route::get('/', [DendaController::class, 'index']);
+    Route::post('/create', [DendaController::class, 'create']);
+    Route::put('/update/{id}', [PeminjamanController::class, 'update']);
+    Route::delete('/delete/{id}', [DendaController::class, 'delete_by_id']);
+    Route::get('/find-denda/{id_member}', [DendaController::class, 'find_by_memberId']);
+});
 
 // Route::get('/book', [BookController::class, 'index'])->middleware('auth:sanctum');
